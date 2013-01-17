@@ -5,5 +5,13 @@ package org.suggs.networking.sockets
  * To change this template use File | Settings | File Templates.
  */
 class Server {
+  // 1. create socket
+  // 2. bind and
+  //
+  // 3. listen to a port
+  // 4. accept requests
+  // 6. receive
+  // 9. send
+  // 10.close / discomment
 
 }
