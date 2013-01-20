@@ -1,7 +1,8 @@
 package org.suggs.networking.sockets
 
-import java.net.InetAddress
+import java.net.{Socket, InetAddress}
 import grizzled.slf4j.Logger
+import java.io.{DataInputStream, DataOutputStream, ObjectOutputStream}
 
 /**
  * TODO: Justify why you have written this class!
@@ -19,10 +20,22 @@ object Client {
 
   def main(args: Array[String]) {
 
+    val objectToSend = "12345687"
 
     val address = InetAddress.getByName("localhost")
+    LOG.debug("Connecting to the socket")
+    val socket = new Socket(address, 9999)
+    val outStream = new ObjectOutputStream(new DataOutputStream(socket.getOutputStream))
+    val inStream = new DataInputStream(socket.getInputStream)
 
-    LOG.debug("Foo bar")
+    LOG.debug("Sending object")
+    outStream.writeObject(objectToSend)
+    outStream.flush
+
+
+
+
+
   }
 
 

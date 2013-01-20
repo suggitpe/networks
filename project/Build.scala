@@ -27,6 +27,9 @@ object Build extends Build {
     )
   )
 
+  // #################################
+  // ############ SETTINGS ###########
+  // #################################
   override lazy val settings =
     super.settings ++
       buildSettings ++
