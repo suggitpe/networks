@@ -2,7 +2,7 @@ package org.suggs.networking.sockets
 
 import grizzled.slf4j.Logger
 import java.net.{Socket, ServerSocket}
-import java.io.{DataInputStream, ObjectInputStream}
+import java.io.{ObjectOutputStream, DataOutputStream, DataInputStream, ObjectInputStream}
 
 /**
  * TODO: Justify why you have written this class!
@@ -34,14 +34,18 @@ object Server {
 
   case class ServerThread(socket: Socket) extends Thread("ServerThread") {
     override def run(): Unit = {
-      val outStream = socket.getOutputStream
+      val outStream = new ObjectOutputStream(new DataOutputStream(socket.getOutputStream))
       val inStream = new ObjectInputStream(new DataInputStream(socket.getInputStream))
 
       LOG.debug("Reading object")
       val objectReceived = inStream.readObject
       LOG.debug("Received object " + objectReceived)
 
+      outStream.writeObject(objectReceived)
 
+      outStream.close
+      inStream.close
+      socket.close
     }
 
   }

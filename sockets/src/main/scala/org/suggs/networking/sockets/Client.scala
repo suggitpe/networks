@@ -2,7 +2,7 @@ package org.suggs.networking.sockets
 
 import java.net.{Socket, InetAddress}
 import grizzled.slf4j.Logger
-import java.io.{DataInputStream, DataOutputStream, ObjectOutputStream}
+import java.io.{ObjectInputStream, DataInputStream, DataOutputStream, ObjectOutputStream}
 
 /**
  * TODO: Justify why you have written this class!
@@ -26,16 +26,22 @@ object Client {
     LOG.debug("Connecting to the socket")
     val socket = new Socket(address, 9999)
     val outStream = new ObjectOutputStream(new DataOutputStream(socket.getOutputStream))
-    val inStream = new DataInputStream(socket.getInputStream)
+    val inStream = new ObjectInputStream(new DataInputStream(socket.getInputStream))
 
     LOG.debug("Sending object")
     outStream.writeObject(objectToSend)
     outStream.flush
 
+    LOG.debug("Sent object to server")
 
+    LOG.debug("Waiting for response ...")
 
+    val in = inStream.readObject
+    LOG.debug("Read in object " + in)
 
-
+    outStream.close
+    inStream.close
+    socket.close
   }
 
 
