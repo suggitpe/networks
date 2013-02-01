@@ -11,7 +11,7 @@ object Build extends Build {
 
   lazy val sockets = Project(
     id = "Sockets",
-    base = file("sockets"),
+    base = file("modules/sockets"),
     dependencies = Seq(other),
     settings = defaultSettings ++ Seq(
       libraryDependencies ++= Dependencies.dep_sockets
@@ -20,7 +20,7 @@ object Build extends Build {
 
   lazy val other = Project(
     id = "Other",
-    base = file("other"),
+    base = file("modules/other"),
     dependencies = Seq(),
     settings = defaultSettings ++ Seq(
       libraryDependencies ++= Dependencies.dep_other
