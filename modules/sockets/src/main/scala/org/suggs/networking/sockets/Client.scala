@@ -5,41 +5,37 @@ import grizzled.slf4j.Logger
 import java.io.{ObjectInputStream, DataInputStream, DataOutputStream, ObjectOutputStream}
 
 /**
- * TODO: Justify why you have written this class!
- * To change this template use File | Settings | File Templates.
+ * Simple client application that will push a message to the server and wait
+ * for it to be echo'd back.
  */
 object Client {
 
   val LOG = Logger(getClass)
-
-  // 1.  create a socket
-  // 5. connect
-  // 7. send request
-  // 8. receive
-  // 10. disconnect / close
+  val objectToSend = "12345687"
 
   def main(args: Array[String]) {
+    val socket = createSocket
+    sendMessageToServer(socket, objectToSend)
+    waitForMessageFromServer(socket)
+  }
 
-    val objectToSend = "12345687"
+  def createSocket(): Socket = {
+    new Socket(InetAddress.getByName("localhost"), 9999)
+  }
 
-    val address = InetAddress.getByName("localhost")
-    LOG.debug("Connecting to the socket")
-    val socket = new Socket(address, 9999)
+  def sendMessageToServer(socket: Socket, thing: Object) = {
     val outStream = new ObjectOutputStream(new DataOutputStream(socket.getOutputStream))
-    val inStream = new ObjectInputStream(new DataInputStream(socket.getInputStream))
-
-    LOG.debug("Sending object")
-    outStream.writeObject(objectToSend)
+    LOG.debug("Sending object [" + thing + "] to the server")
+    outStream.writeObject(thing)
     outStream.flush
+    LOG.debug("Object sent to server")
+  }
 
-    LOG.debug("Sent object to server")
-
-    LOG.debug("Waiting for response ...")
-
+  def waitForMessageFromServer(socket: Socket) = {
+    LOG.debug("Waiting for message from the server")
+    val inStream = new ObjectInputStream(new DataInputStream(socket.getInputStream))
     val in = inStream.readObject
-    LOG.debug("Read in object " + in)
-
-    outStream.close
+    LOG.debug("Received object from server [" + in + "]")
     inStream.close
     socket.close
   }

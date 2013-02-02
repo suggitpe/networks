@@ -12,39 +12,35 @@ object Server {
 
   val LOG = Logger(getClass)
 
-  // 1. create socket
-  // 2. bind and
-  //
-  // 3. listen to a port
-  // 4. accept requests
-  // 6. receive
-  // 9. send
-  // 10.close / discomment
 
   def main(args: Array[String]) {
-    val listener = new ServerSocket(9999)
+    val socket = new ServerSocket(9999)
     while (true) {
-      LOG.debug("Starting new listsner thread")
-      new ServerThread(listener.accept).start()
+      LOG.debug("Starting new listener thread")
+      new ServerThread(socket.accept).start()
     }
-    listener.close
-
-
+    socket.close
   }
 
   case class ServerThread(socket: Socket) extends Thread("ServerThread") {
-    override def run(): Unit = {
-      val outStream = new ObjectOutputStream(new DataOutputStream(socket.getOutputStream))
+
+
+    override def run() = {
+      returnObject(socket, recieveObject(socket))
+    }
+
+    def recieveObject(socket: Socket): Object = {
       val inStream = new ObjectInputStream(new DataInputStream(socket.getInputStream))
+      LOG.debug("waiting for object from stream")
+      inStream.readObject
+    }
 
-      LOG.debug("Reading object")
-      val objectReceived = inStream.readObject
-      LOG.debug("Received object " + objectReceived)
-
+    def returnObject(socket: Socket, objectReceived: Object) = {
+      LOG.debug("Received object [" + objectReceived + "] from stream")
+      val outStream = new ObjectOutputStream(new DataOutputStream(socket.getOutputStream))
+      LOG.debug("Sending object back over the stream")
       outStream.writeObject(objectReceived)
-
       outStream.close
-      inStream.close
       socket.close
     }
 
